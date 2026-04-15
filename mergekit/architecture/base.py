@@ -4,6 +4,7 @@
 from abc import ABC, abstractmethod
 from typing import Dict, List, Optional, Tuple
 
+import torch  # noqa: F401 — needed so Pydantic can resolve PretrainedConfig's torch.dtype annotation
 from pydantic import BaseModel, Field
 from transformers import PretrainedConfig
 
@@ -151,3 +152,10 @@ class ConfiguredModelArchitecture(BaseModel, frozen=True, arbitrary_types_allowe
             config=self.config,
             weight_prefix=self.info.modules[module_name].weight_prefix,
         )
+
+
+# Transformers v5 added a `dtype: Union[str, "torch.dtype"]` annotation to
+# PretrainedConfig.  Pydantic can't resolve that forward reference unless torch
+# is already importable, so we rebuild both models that embed PretrainedConfig.
+ConfiguredModuleArchitecture.model_rebuild()
+ConfiguredModelArchitecture.model_rebuild()
