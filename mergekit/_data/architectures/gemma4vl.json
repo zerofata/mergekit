@@ -67,28 +67,36 @@
                             "name": "layers.${layer_index}.post_feedforward_layernorm.weight"
                         },
                         {
-                            "name": "layers.${layer_index}.pre_feedforward_layernorm_2.weight"
+                            "name": "layers.${layer_index}.pre_feedforward_layernorm_2.weight",
+                            "optional": true
                         },
                         {
-                            "name": "layers.${layer_index}.experts.gate_up_proj"
+                            "name": "layers.${layer_index}.experts.gate_up_proj",
+                            "optional": true
                         },
                         {
-                            "name": "layers.${layer_index}.experts.down_proj"
+                            "name": "layers.${layer_index}.experts.down_proj",
+                            "optional": true
                         },
                         {
-                            "name": "layers.${layer_index}.router.proj.weight"
+                            "name": "layers.${layer_index}.router.proj.weight",
+                            "optional": true
                         },
                         {
-                            "name": "layers.${layer_index}.router.per_expert_scale"
+                            "name": "layers.${layer_index}.router.per_expert_scale",
+                            "optional": true
                         },
                         {
-                            "name": "layers.${layer_index}.router.scale"
+                            "name": "layers.${layer_index}.router.scale",
+                            "optional": true
                         },
                         {
-                            "name": "layers.${layer_index}.post_feedforward_layernorm_1.weight"
+                            "name": "layers.${layer_index}.post_feedforward_layernorm_1.weight",
+                            "optional": true
                         },
                         {
-                            "name": "layers.${layer_index}.post_feedforward_layernorm_2.weight"
+                            "name": "layers.${layer_index}.post_feedforward_layernorm_2.weight",
+                            "optional": true
                         },
                         {
                             "name": "layers.${layer_index}.layer_scalar"
