@@ -18,7 +18,7 @@ dependencies = [
     "accelerate~=1.6.0",
     "pydantic~=2.10.6",
     "immutables==0.21",
-    "transformers>=4.45.2",
+    "transformers==5.5.3",
     "tokenizers>=0.20.1",
     "huggingface_hub",
     "peft",
