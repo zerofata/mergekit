@@ -24,10 +24,8 @@ def sce_merge(
 ) -> torch.Tensor:
     if not tensors:
         return base_tensor
-    out_dtype = base_tensor.dtype
-    base = base_tensor.float()
-    mask_dtype = torch.int8 if int8_mask else torch.float32
-    task_vectors = torch.stack([t.float() - base for t in tensors], dim=0)
+    mask_dtype = torch.int8 if int8_mask else base_tensor.dtype
+    task_vectors = torch.stack([t - base_tensor for t in tensors], dim=0)
 
     if select_topk < 1:
         mask = sce_mask(task_vectors, select_topk, mask_dtype)
@@ -43,9 +41,9 @@ def sce_merge(
     merged_tv = (task_vectors * erased_weights).sum(dim=0)
     final_tv = merged_tv / torch.sum(erased_weights, dim=0).clamp(min=1e-6)
 
-    result = base + final_tv
+    result = base_tensor + final_tv
     assert result.shape == base_tensor.shape
-    return result.to(out_dtype)
+    return result
 
 
 def sce_weight(tvs: torch.Tensor) -> torch.Tensor:
