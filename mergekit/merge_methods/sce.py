@@ -41,13 +41,15 @@ def sce_merge(
     merged_tv = (task_vectors * erased_weights).sum(dim=0)
     final_tv = merged_tv / torch.sum(erased_weights, dim=0).clamp(min=1e-6)
 
-    return base_tensor + final_tv
+    result = base_tensor + final_tv
+    assert result.shape == base_tensor.shape
+    return result
 
 
 def sce_weight(tvs: torch.Tensor) -> torch.Tensor:
     weights = torch.mean(tvs**2, dim=list(range(1, tvs.dim())))
     weight_sum = torch.sum(weights).item()
-    if abs(weight_sum) < 1e-6:
+    if weight_sum == 0:
         return torch.ones_like(weights) / weights.shape[0]
     return weights / weight_sum
 
@@ -55,16 +57,17 @@ def sce_weight(tvs: torch.Tensor) -> torch.Tensor:
 def sce_mask(
     tvs: torch.Tensor, density: float, mask_dtype: Optional[torch.dtype] = None
 ):
+    # Mask is per-element (shape of a single task vector), broadcast over models.
     if density <= 0:
-        return torch.zeros_like(tvs, dtype=mask_dtype)
+        return torch.zeros(tvs.shape[1:], dtype=mask_dtype, device=tvs.device)
     if density >= 1:
-        return torch.ones_like(tvs, dtype=mask_dtype)
+        return torch.ones(tvs.shape[1:], dtype=mask_dtype, device=tvs.device)
 
     var = torch.var(tvs, dim=0, unbiased=False)
     nonzero = torch.count_nonzero(var)
     k = int(nonzero * density)
     if k == 0:
-        return torch.zeros_like(tvs, dtype=mask_dtype)
+        return torch.zeros_like(var, dtype=mask_dtype)
 
     _, indices = torch.topk(var.abs().view(-1), k=k, largest=True)
     mask = torch.zeros_like(var, dtype=mask_dtype)
